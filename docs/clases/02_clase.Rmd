@@ -10,6 +10,8 @@ output:
     self_contained: true
 ---
 
+![Logo de R](../recursos/logo-r.png){width=84px}
+
 [Índice general del curso](../INDICE_CURSO.html)
 
 
@@ -141,4 +143,4 @@ sum(ventas_pequenas$ingreso_crc)
 
 ## Evaluación fuera de clase
 
-[Trabajo grupal I](../actividades/practica_01.html). Resuelvan los ocho problemas en equipo fuera de clase.
+[Trabajo grupal I](../actividades/practica_01.html). Resuelvan los diez problemas en equipo fuera de clase.

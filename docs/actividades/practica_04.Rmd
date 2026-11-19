@@ -6,12 +6,14 @@ output:
     toc: true
 ---
 
+![Logo de R](../recursos/logo-r.png){width=84px}
+
 [Índice general del curso](../INDICE_CURSO.html)
 
 
 ## Indicaciones
 
-Resuelvan el trabajo fuera de clase, en equipos de dos o tres. Entreguen un solo archivo .R con los nombres del equipo y dos PNG. Cada problema vale 12,5 puntos, para un total de 100.
+Resuelvan el trabajo fuera de clase, en equipos de dos o tres. Entreguen un solo archivo .R con los nombres del equipo y dos PNG. Cada problema vale 10 puntos, para un total de 100.
 
 ## Ejercicios
 
@@ -23,3 +25,5 @@ Resuelvan el trabajo fuera de clase, en equipos de dos o tres. Entreguen un solo
 6. **Elijan un histograma.** Escojan cuál usarían para responder en qué cantidades se concentran las ventas. Justifiquen la elección y agreguen una nota con el número de ventas que quedaron fuera.
 7. **Revisen los puntos superpuestos.** Hagan una dispersión de precio y unidades conocidas con `alpha = 0.4`. Repítanla con `alpha = 1` y describan qué cambia al observar una zona donde se acumulan puntos.
 8. **Preparen la entrega.** Usen `ggsave()` para guardar el gráfico de barras y el histograma que eligieron. Revisen que cada PNG tenga título, unidades y una nota con la fuente. Incluyan en el script un hallazgo que use una cifra de cada gráfico guardado.
+9. **Comparen cantidades por sede.** Con las ventas que tienen unidades conocidas, sumen las unidades por sede. Hagan un gráfico de barras con esos totales e indiquen cuál sede tiene la barra más alta.
+10. **Revisen qué queda fuera.** Cuenten por sede las ventas con unidades faltantes. Expliquen, con una cifra, qué conviene tener en cuenta al interpretar las barras del problema anterior.

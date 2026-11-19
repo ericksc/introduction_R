@@ -1,0 +1,28 @@
+# Proyecto final
+
+Realizá el proyecto final de forma individual fuera de clase. Usá la [plantilla R Markdown](proyecto_final.Rmd) y los datos de ventas simuladas del curso.
+
+## Prepará y entregá tu informe
+
+1. Con **File → Save As**, guardá la plantilla como `mi_proyecto.Rmd` en la carpeta principal del proyecto. Cambiá el nombre de autor y pulsá **Knit**.
+2. Agregá el número de ventas por sede con `n()`. Cambiá el título y la etiqueta del eje vertical del gráfico.
+3. Usá los conteos y los montos de la tabla para escribir dos hallazgos y una limitación.
+4. Pulsá **Knit** de nuevo. Revisá la tabla, el gráfico y el texto. Entregá `mi_proyecto.Rmd` y `mi_proyecto.html`.
+
+La plantilla ya abre los datos, prepara el resumen y dibuja las barras. Revisá el código dentro de los bloques de R. Escribí los hallazgos fuera de los bloques. Si **Knit** falla después de un cambio, revisá primero el bloque que editaste y confirmá que guardaste la copia en la carpeta del proyecto.
+
+## Pregunta
+
+¿Cuál sede registró el mayor ingreso observado? ¿Cuántas ventas de esa sede quedaron fuera de la suma por falta de unidades?
+
+## Entrega
+
+Un archivo `.Rmd` y su `.html`. El informe debe incluir una tabla por sede con número de ventas, número de ventas con unidades faltantes e ingreso observado en colones. Incluí un gráfico de barras, dos hallazgos con cifras y una limitación. La plantilla incluye el código que abre y prepara los datos.
+
+| Criterio | Puntos |
+|---|---:|
+| Reporta cuántas ventas únicas y cuántas con unidades desconocidas hay. | 20 |
+| Presenta la tabla por sede con conteos e ingresos correctos. | 30 |
+| Presenta un gráfico de barras con título y eje en colones. | 20 |
+| Explica dos hallazgos con cifras y una limitación. | 20 |
+| El Rmd genera el HTML desde la carpeta principal del proyecto. | 10 |

@@ -10,6 +10,8 @@ output:
     self_contained: true
 ---
 
+![Logo de R](../recursos/logo-r.png){width=84px}
+
 [Índice general del curso](../INDICE_CURSO.html)
 
 
@@ -131,4 +133,4 @@ ggplot(ventas_con_unidades, aes(precio_crc, unidades)) +
 
 ## Evaluación fuera de clase
 
-[Trabajo grupal II](../actividades/practica_04.html). Resuelvan los ocho problemas en equipo fuera de clase.
+[Trabajo grupal II](../actividades/practica_04.html). Resuelvan los diez problemas en equipo fuera de clase.

@@ -10,6 +10,8 @@ output:
     self_contained: true
 ---
 
+![Logo de R](../recursos/logo-r.png){width=84px}
+
 [Índice general del curso](../INDICE_CURSO.html)
 
 

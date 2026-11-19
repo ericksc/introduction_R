@@ -16,3 +16,7 @@
 # Problema 7
 
 # Problema 8
+
+# Problema 9
+
+# Problema 10

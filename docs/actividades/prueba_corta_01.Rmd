@@ -6,6 +6,8 @@ output:
     toc: true
 ---
 
+![Logo de R](../recursos/logo-r.png){width=84px}
+
 [Índice general del curso](../INDICE_CURSO.html)
 
 
@@ -15,8 +17,10 @@ Resolvé esta evaluación de forma individual fuera de clase. Podés consultar t
 
 ## Ejercicios
 
-1. **Precio y cantidad (3 puntos).** Guardá 1800 como precio en colones y 4 como cantidad. Mostrá el costo total. Usá asignación con `<-` y multiplicación con `*`.
-2. **Tipos de datos (3 puntos).** Ejecutá `typeof("1800")` y `typeof(FALSE)`. Escribí qué tipo devuelve R en cada caso. Identificá cuál valor es texto y cuál es lógico.
-3. **Promedio (4 puntos).** Guardá los tiempos `c(25, NA, 35, 40)` en un vector. Usá `mean()` omitiendo el `NA` y contá cuántos tiempos conocidos usaste. Podés dejar el promedio con los decimales que muestre R.
+1. **Costo de una compra (2 puntos).** Guardá 1800 como precio en colones y 4 como cantidad. Calculá el costo total.
+2. **Tipos de datos (2 puntos).** Usá `typeof()` para comparar `1800`, `"1800"` y `FALSE`. Explicá cuál representa un número, cuál texto y cuál un valor lógico.
+3. **Conversión (2 puntos).** Convertí `"1800"` a número con `as.numeric()`. Comprobá el tipo del resultado y multiplicalo por 3.
+4. **Tiempos conocidos (2 puntos).** Creá el vector `c(25, NA, 35, 40)`. Mostrá cuántos tiempos tiene el vector, cuántos se conocen y cuál es el promedio de los conocidos, en minutos.
+5. **Qué significa el faltante (2 puntos).** Creá otro vector con 0 en lugar de `NA`. Calculá el promedio y explicá por qué usar cero cambia la interpretación.
 
 Antes de entregar, guardá el archivo y comprobá que las instrucciones corran en orden.

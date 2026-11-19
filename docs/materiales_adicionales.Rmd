@@ -1,0 +1,131 @@
+---
+title: "Materiales adicionales"
+lang: es-CR
+output:
+  html_document:
+    toc: true
+    theme: flatly
+---
+
+![Logo de R](recursos/logo-r.png){width=84px}
+
+[Índice general del curso](INDICE_CURSO.html)
+
+
+Acá encontrás lecturas abiertas y ejemplos para practicar después de cada lección. Los ejemplos incluyen sus datos. Las citas a *Learning R* indican el capítulo donde se presenta la idea que usamos. [Datos y código del autor](https://github.com/richierocks/learningr).
+
+## Lección 1 · Objetos, tipos y valores faltantes {#leccion-1}
+
+¿Qué pasa con el promedio si falta un tiempo de viaje? Fijate en la segunda posición y compará el número de tiempos conocidos con el total de posiciones. El ejemplo retoma la detección de datos faltantes de *Learning R*. [Valores faltantes](https://r4ds.hadley.nz/missing-values.html) · *Learning R* (Cotton, 2013, cap. 2) · [Tipos de objetos](https://stat.ethz.ch/R-manual/R-devel/library/base/html/typeof.html) · *Learning R* (Cotton, 2013, cap. 3).
+
+```{r tiempos}
+tiempos <- c(20, NA, 35, 29)
+typeof(tiempos)
+is.na(tiempos)
+sum(!is.na(tiempos))
+mean(tiempos, na.rm = TRUE)
+```
+
+Para ampliar, revisá cómo un proyecto organiza los scripts y archivos de datos. [R for Data Science, Scripts and Projects](https://r4ds.hadley.nz/workflow-scripts.html).
+
+## Lección 2 · Listas, matrices y data frames {#leccion-2}
+
+Pensá en una soda que registra sus ventas por día y producto. En el ejemplo usamos una matriz para las cantidades y una lista para guardar la matriz junto con el nombre de la sede. Compará qué devuelve `[]` con lo que devuelve `[[]]` al pedir un elemento de la lista. [Crear matrices](https://stat.ethz.ch/R-manual/R-devel/library/base/html/matrix.html) · *Learning R* (Cotton, 2013, cap. 4) · [Listas y data frames](https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Lists-and-data-frames) · *Learning R* (Cotton, 2013, cap. 5).
+
+```{r estructuras}
+cantidades <- matrix(c(4, 8, 6, 5), nrow = 2, byrow = TRUE,
+                     dimnames = list(c("lunes", "martes"), c("cafe", "pan")))
+cantidades["martes", "pan"]
+ficha <- list(sede = "Cartago", cantidades = cantidades)
+ficha["cantidades"]
+ficha[["cantidades"]]
+ventas <- data.frame(producto = c("Café", "Pan", "Té"), unidades = c(4, 8, 2))
+ventas[ventas$unidades >= 4, "producto"]
+```
+
+## Lección 3 · Leer, limpiar, transformar y guardar {#leccion-3}
+
+En el capítulo 12, el ejercicio 12-1 usa un CSV llamado `hafu.csv`. En el capítulo 13, Cotton calcula cuánto duró cada reinado a partir de las columnas de inicio y fin. Aplicá esas dos ideas a un CSV pequeño de préstamos. El ejemplo crea los archivos en una carpeta temporal, importa los datos, calcula una columna con `mutate()`, guarda un resumen y lo vuelve a leer. [Importar datos](https://r4ds.hadley.nz/data-import.html) · *Learning R* (Cotton, 2013, cap. 12) · [Transformar datos con dplyr](https://r4ds.hadley.nz/data-transform.html) · *Learning R* (Cotton, 2013, cap. 13).
+
+```{r transformar, message=FALSE}
+library(readr)
+library(dplyr)
+entrada <- tempfile(fileext = ".csv")
+salida <- tempfile(fileext = ".csv")
+writeLines(c("sede,inicio,devolucion", "Cartago,2,8", "Cartago,3,NA",
+             "Heredia,5,9"), entrada)
+prestamos <- read_csv(entrada, show_col_types = FALSE)
+resumen <- prestamos |>
+  mutate(dias = devolucion - inicio) |>
+  group_by(sede) |>
+  summarise(prestamos = n(), faltantes = sum(is.na(dias)),
+            promedio_dias = mean(dias, na.rm = TRUE), .groups = "drop")
+write_csv(resumen, salida)
+read_csv(salida, show_col_types = FALSE)
+```
+
+Para ampliar, consultá cómo `dplyr` agrega columnas y resume por grupo, y cómo `readr` escribe archivos. [R for Data Science, Data Transformation](https://r4ds.hadley.nz/data-transform.html) · [Documentación de write_csv()](https://readr.tidyverse.org/reference/write_delim.html).
+
+## Lección 4 · Texto, expresiones regulares y ciclos {#leccion-4}
+
+Un pedido puede venir con espacios o con letras en minúscula. En este ejemplo vas a limpiar los códigos, revisar su formato y mostrar el resultado de cada uno con un ciclo. Primero buscá coincidencias en el vector completo. Luego seguí el ciclo para ver cada código con su resultado. [Limpiar y buscar texto](https://r4ds.hadley.nz/strings.html) · *Learning R* (Cotton, 2013, cap. 13) · [Ciclos for](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Control.html) · *Learning R* (Cotton, 2013, cap. 8).
+
+```{r codigos}
+codigos <- c(" ped-017 ", "PED-21", "XPED-003", "PED-080")
+codigos_limpios <- stringr::str_to_upper(stringr::str_squish(codigos))
+patron <- "^PED-[0-9]{3}$"
+validos <- stringr::str_detect(codigos_limpios, patron)
+for (i in seq_along(codigos_limpios)) {
+  print(paste(codigos_limpios[i], validos[i]))
+}
+```
+
+Para ampliar, probá cómo cambia una búsqueda al quitar las marcas de inicio y fin. [R for Data Science, Regular Expressions](https://r4ds.hadley.nz/regexps.html).
+
+## Lección 5 · Visualización con ggplot2 {#leccion-5}
+
+Cada punto del gráfico representa una venta. Mirá cómo cambian las unidades vendidas según el precio. La idea viene del gráfico de dispersión del capítulo 14, que compara ingreso y participación electoral. Usá las barras para comparar cantidades por producto y el histograma para ver la frecuencia en intervalos. [Visualizar datos con ggplot2](https://r4ds.hadley.nz/data-visualize.html) · *Learning R* (Cotton, 2013, cap. 14).
+
+```{r graficos, fig.width=5.5, fig.height=3}
+library(ggplot2)
+library(dplyr)
+ventas_grafico <- data.frame(
+  producto = c("Café", "Café", "Pan", "Pan", "Té", "Té"),
+  unidades = c(2, 5, 1, 6, 2, 3),
+  precio_crc = c(1500, 1500, 900, 900, 1200, 1200)
+)
+totales <- ventas_grafico |>
+  group_by(producto) |>
+  summarise(unidades = sum(unidades), .groups = "drop")
+ggplot(totales, aes(producto, unidades)) + geom_col() +
+  labs(x = "Producto", y = "Total de unidades")
+ggplot(ventas_grafico, aes(unidades)) + geom_histogram(binwidth = 2, boundary = 0.5) +
+  labs(x = "Unidades por venta", y = "Número de ventas")
+ggplot(ventas_grafico, aes(precio_crc, unidades)) + geom_point(alpha = 0.6) +
+  labs(x = "Precio unitario (CRC)", y = "Unidades por venta")
+```
+
+Para ampliar, compará el histograma con `binwidth = 1` y con `binwidth = 2`. [Documentación de geom_histogram()](https://ggplot2.tidyverse.org/reference/geom_histogram.html).
+
+## Lección 6 · Unir tablas y comunicar resultados {#leccion-6}
+
+El capítulo 5 combina dos data frames que comparten una columna. En este ejemplo la columna en común es `sede`. `left_join()` conserva las ventas y agrega el dato del catálogo. Compará cuántas filas hay antes y después, y fijate qué pasa con el dato de la sede ausente del catálogo. [Unir tablas por una clave](https://r4ds.hadley.nz/joins.html) · *Learning R* (Cotton, 2013, cap. 5) · [Documentación de left_join()](https://dplyr.tidyverse.org/reference/mutate-joins.html).
+
+```{r unir}
+ventas_sede <- data.frame(sede = c("Cartago", "Heredia", "Cartago"), unidades = c(4, 3, 6))
+catalogo <- data.frame(sede = "Cartago", region = "Central")
+tabla_final <- dplyr::left_join(ventas_sede, catalogo, by = "sede")
+nrow(ventas_sede)
+nrow(tabla_final)
+knitr::kable(tabla_final, caption = "Ventas por sede y región")
+```
+
+Para ampliar, copiá el ejemplo a un bloque de R de tu propio `.Rmd`. Debajo del bloque, escribí una oración sobre la fila con región faltante. Generá el HTML con **Knit**. [Introducción oficial a R Markdown](https://rmarkdown.rstudio.com/articles_intro.html).
+
+## Referencias {#referencias}
+
+Cotton, R. (2013). *Learning R: A step-by-step function guide to data analysis*. O’Reilly Media.
+
+Ihaka, R., & Gentleman, R. (1996). R: A language for data analysis and graphics. *Journal of Computational and Graphical Statistics, 5*(3), 299–314. `https://doi.org/10.1080/10618600.1996.10474713`
+
+Logo de R © 2016 The R Foundation. [Archivo original](https://www.r-project.org/logo/) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Se conserva la imagen original.

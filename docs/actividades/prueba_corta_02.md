@@ -6,8 +6,10 @@ Resolvé esta evaluación de forma individual fuera de clase. Abrí el proyecto 
 
 ## Ejercicios
 
-1. **Revisá el CSV (3 puntos).** Leé `datos/ventas.csv` con `read_csv()`. Contá las filas con `nrow()` y los duplicados exactos con `duplicated()` y `sum()`.
-2. **Prepará los datos (3 puntos).** Ejecutá `source("herramientas/preparar_datos.R")` y `ventas <- preparar_ventas()`. Contá las unidades desconocidas con `is.na()` y `sum()`.
-3. **Resumí por producto (4 puntos).** Usá `group_by(producto)` y `summarise()` para generar una fila por producto. Mostrá la tabla con el conteo de ventas, los faltantes y el ingreso observado en colones. Elegí un producto y escribí en una oración cuánto ingreso se pudo sumar y cuántas de sus ventas quedaron fuera de esa suma. Mostrá el resumen en la consola.
+1. **Revisá el CSV (2 puntos).** Leé `datos/ventas.csv` con `read_csv()`. Mostrá cuántas filas contiene y cuántas son duplicados exactos.
+2. **Comprobá la limpieza (2 puntos).** Cargá `herramientas/preparar_datos.R` con `source()` y usá `preparar_ventas()`. Compará la cantidad de filas antes y después. Contá las ventas únicas con unidades faltantes.
+3. **Filtrá ventas (2 puntos).** Mostrá las ventas de Pan con tres unidades o más. Incluí sede, unidades e ingreso en colones y ordená de mayor a menor ingreso.
+4. **Resumí por producto (2 puntos).** Mostrá por producto el número de ventas, las ventas con unidades faltantes y el ingreso observado. Elegí un producto y explicá qué ventas quedaron fuera del cálculo.
+5. **Verificá y guardá el resultado (2 puntos).** Compará la suma de los ingresos por producto con el total de los ingresos conocidos. Guardá la tabla en `salidas/resumen_prueba_02.csv` y volvé a leerla para comprobar cuántas filas tiene.
 
-Entregá el script guardado con los tres ejercicios.
+Entregá el archivo `prueba_corta_02.R` con los cinco ejercicios. El script debe generar el CSV al ejecutarse.

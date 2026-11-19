@@ -6,6 +6,8 @@ output:
     toc: true
 ---
 
+![Logo de R](../recursos/logo-r.png){width=84px}
+
 [Índice general del curso](../INDICE_CURSO.html)
 
 
@@ -15,11 +17,11 @@ Resolvé esta evaluación de forma individual fuera de clase. Abrí el proyecto 
 
 ## Ejercicios
 
-1. **Tiempos de viaje (5 puntos).** Guardá en un vector los tiempos `c(18, 24, NA, 30, 36)` en minutos. Mostrá el promedio de los valores conocidos y explicá qué significa `NA` en este caso. Usá `mean()` con `na.rm = TRUE`.
-2. **Tabla de ventas (5 puntos).** Creá un `data.frame()` con una columna para cada característica. Usá los productos Café, Pan y Té, las unidades 2, 3 y 1 y los precios unitarios 1500, 900 y 1200 colones, en ese orden. Calculá el ingreso de cada venta y mostrá las que tienen al menos dos unidades.
-3. **Ingresos por sede (5 puntos).** Cargá `herramientas/preparar_datos.R` con `source()` y guardá en `ventas` la tabla que devuelve `preparar_ventas()`. Agrupá por sede con `group_by()` y resumí con `summarise()`. Contá las unidades faltantes y sumá solo los ingresos conocidos. Mostrá la tabla. Escribí el ingreso observado y el número de ventas con unidades faltantes de una sede.
-4. **Revisión de los datos (5 puntos).**
-   - **Códigos (2 puntos).** Usá una expresión regular con marcas de inicio y final. Mostrá cuáles de `FAC-012`, `FAC-12` y `XFAC-012` cumplen el formato `FAC-` seguido de exactamente tres dígitos.
-   - **Faltantes (3 puntos).** Usá un ciclo `for` para recorrer los nombres `c("unidades", "ingreso_crc")`. Accedé a cada columna de `ventas` con `[[ ]]` y contá los `NA` con `is.na()` y `sum()`. Mostrá una tabla con cada nombre y su conteo y explicá en una oración por qué los dos conteos coinciden o difieren.
+1. **Tiempos de viaje (3 puntos).** Usá `c(18, 24, NA, 30, 36)`, en minutos. Mostrá el promedio y la cantidad de datos conocidos. Explicá qué significa el `NA`.
+2. **Tabla de ventas (3 puntos).** Creá un data frame con Café, Pan y Té, unidades 2, 3 y 1 y precios unitarios 1500, 900 y 1200 colones, en ese orden. Calculá el ingreso de cada venta y mostrá las que tienen al menos dos unidades.
+3. **Ingresos por sede (4 puntos).** Cargá `herramientas/preparar_datos.R` con `source()` y guardá en `ventas` la tabla que devuelve `preparar_ventas()`. Mostrá una tabla por sede con el ingreso observado y el número de ventas con unidades faltantes. Comentá el resultado de una sede.
+4. **Comprobación del resumen (3 puntos).** Sumá los ingresos por sede y comparalos con la suma de los ingresos conocidos de toda la tabla. Guardá el resumen en `salidas/resumen_parcial.csv` y volvé a leerlo.
+5. **Códigos (3 puntos).** Mostrá cuáles de `FAC-012`, `FAC-12`, `XFAC-012` y `fac-008` cumplen el patrón `FAC-` seguido de tres dígitos. Convertí los códigos a mayúsculas y explicá cuál cambia de resultado.
+6. **Faltantes (4 puntos).** Usá un ciclo `for` para recorrer `c("unidades", "ingreso_crc")` en `ventas`. Mostrá cuántos `NA` tiene cada columna y explicá por qué coinciden o difieren los conteos.
 
-Entregá un solo archivo `examen_parcial.R`.
+Entregá un solo archivo `examen_parcial.R`. El script debe generar el CSV al ejecutarse.

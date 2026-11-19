@@ -1,0 +1,60 @@
+---
+title: "Proyecto final de Introducción a R"
+author: "Escribe tu nombre"
+lang: es-CR
+output:
+  html_document:
+    toc: true
+---
+
+![Logo de R](recursos/logo-r.png){width=84px}
+
+[Índice general del curso](INDICE_CURSO.html)
+
+
+## Pregunta
+
+¿Cuál sede registró el mayor ingreso observado? ¿Cuántas ventas de esa sede quedaron fuera de la suma por falta de unidades?
+
+## Revisión de los datos
+
+```{r datos, message=FALSE}
+source("herramientas/preparar_datos.R")
+library(ggplot2)
+ventas <- preparar_ventas()
+nrow(ventas)
+sum(is.na(ventas$unidades))
+```
+
+Escribí aquí cuántas ventas únicas hay y cuántas tienen unidades desconocidas. Usá los dos resultados de arriba.
+
+## Tabla por sede
+
+```{r tabla}
+resumen <- ventas |>
+  group_by(sede) |>
+  summarise(
+    # Agregá una línea con el número de ventas de cada sede. Usá n().
+    faltantes = sum(is.na(unidades)),
+    ingreso_observado = sum(ingreso_crc, na.rm = TRUE),
+    .groups = "drop"
+  )
+knitr::kable(resumen)
+```
+
+## Gráfico
+
+```{r grafico}
+ggplot(resumen, aes(sede, ingreso_observado)) +
+  geom_col() +
+  labs(title = "Escribí el título del gráfico",
+       x = "Sede", y = "Indicá la medida y la moneda",
+       caption = "Datos simulados de ventas")
+```
+
+## Hallazgos
+
+1. Indicá cuál sede tuvo el mayor ingreso observado y cuánto registró.
+2. Para esa misma sede, indicá cuántas ventas quedaron fuera de la suma y cuántas hubo en total.
+
+Explicá en una oración cómo pueden afectar las cantidades faltantes la comparación entre sedes.

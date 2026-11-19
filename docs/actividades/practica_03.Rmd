@@ -8,6 +8,8 @@ output:
     theme: flatly
 ---
 
+![Logo de R](../recursos/logo-r.png){width=84px}
+
 [Índice general del curso](../INDICE_CURSO.html)
 
 
