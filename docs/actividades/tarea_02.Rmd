@@ -1,0 +1,42 @@
+---
+title: "Tarea 2"
+lang: es-CR
+output:
+  html_document:
+    toc: true
+---
+
+[Índice general del curso](../INDICE_CURSO.html)
+
+
+Trabajá de forma individual. Entregá un archivo `.R` y un CSV con tu resumen de Heredia. Escribí los hallazgos en líneas que empiecen con `#`.
+
+## Datos
+
+[Descargá el CSV de ventas simuladas](tarea_02_ventas.csv). Guardalo junto al script de la tarea, en la carpeta donde está `curso_2026.Rproj`. Si necesitás crear el CSV, copiá estas líneas tal como aparecen a un archivo de texto y guardalo como `tarea_02_ventas.csv` en formato UTF-8.
+
+Cada fila registra una venta. `precio_crc` es el precio por unidad en colones y `NA` indica una cantidad desconocida.
+
+```text
+id_venta,sede,producto,unidades,precio_crc
+1,Heredia,Café,3,1500
+2,Heredia,Pan,2,900
+3,Heredia,Té,1,1200
+4,Cartago,Café,4,1500
+5,Cartago,Pan,2,900
+6,Cartago,Té,NA,1200
+7,Heredia,Café,NA,1500
+8,Heredia,Pan,5,900
+8,Heredia,Pan,5,900
+9,Cartago,Té,3,1200
+```
+
+## Qué hacer
+
+1. Leé `tarea_02_ventas.csv` con `read_csv()` y guardá el resultado como `ventas`. Contá las filas originales, los duplicados exactos y las filas con unidades faltantes.
+2. Quitá los duplicados exactos. Agregá `ingreso_crc` al multiplicar `unidades` por `precio_crc`. Filtrá las ventas de Heredia y resumí por producto el número de ventas, los faltantes de unidades y el ingreso observado. Para sumar el ingreso observado, usá solo los montos conocidos.
+3. Calculá el porcentaje del ingreso observado de Heredia que corresponde a cada producto. Dividí el ingreso del producto entre el ingreso observado total de Heredia y multiplicá por 100.
+4. Guardá el resumen con `write_csv()` como `resumen_heredia.csv`. Leé el archivo que guardaste y comprobá que se vea el resumen por producto. Escribí dos hallazgos con cifras.
+5. **Control de calidad.** Contá cuántas ventas únicas quedan en Heredia y verificá que la suma de los conteos por producto coincida con ese número.
+6. **Comparación entre sedes.** Con todas las ventas únicas, prepará una segunda tabla con el ingreso observado y el conteo de faltantes por sede. Identificá la sede con mayor ingreso observado e indicá cuántas de sus ventas quedaron fuera de la suma.
+7. **Límite del resultado.** Identificá un producto de Heredia cuyo ingreso observado podría ser mayor si se conocieran todas sus cantidades. Justificá tu respuesta con el conteo de faltantes de ese producto.

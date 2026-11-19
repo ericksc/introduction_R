@@ -1,0 +1,16 @@
+# Trabajo grupal II
+
+## Indicaciones
+
+Resuelvan el trabajo fuera de clase, en equipos de dos o tres. Entreguen un solo archivo .R con los nombres del equipo y dos PNG. Cada problema vale 12,5 puntos, para un total de 100.
+
+## Ejercicios
+
+1. **Revisen la cobertura.** Carguen los datos con `preparar_ventas()`. Anoten cuántas ventas únicas hay y cuántas tienen unidades desconocidas.
+2. **Comprueben los conteos por producto.** Hagan una tabla con ventas y faltantes por producto. Sumen ambas columnas y comprueben si coinciden con los conteos generales.
+3. **Construyan barras comparables.** Agreguen a la tabla el ingreso observado por producto. Dibujen barras ordenadas por monto, con título y eje en colones. Comprueben en la tabla cuál producto tiene la barra más larga.
+4. **Interpreten el primer lugar.** Reporten el monto del producto con mayor ingreso observado y su número de ventas con unidades faltantes. Expliquen qué se puede afirmar con esos datos.
+5. **Comparen dos histogramas.** Usen las unidades conocidas para hacer un histograma con `binwidth = 1` y otro con `binwidth = 2`. Digan qué cantidades se pueden distinguir en el primero y cuáles aparecen juntas en el segundo.
+6. **Elijan un histograma.** Escojan cuál usarían para responder en qué cantidades se concentran las ventas. Justifiquen la elección y agreguen una nota con el número de ventas que quedaron fuera.
+7. **Revisen los puntos superpuestos.** Hagan una dispersión de precio y unidades conocidas con `alpha = 0.4`. Repítanla con `alpha = 1` y describan qué cambia al observar una zona donde se acumulan puntos.
+8. **Preparen la entrega.** Usen `ggsave()` para guardar el gráfico de barras y el histograma que eligieron. Revisen que cada PNG tenga título, unidades y una nota con la fuente. Incluyan en el script un hallazgo que use una cifra de cada gráfico guardado.

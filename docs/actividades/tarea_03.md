@@ -1,0 +1,27 @@
+# Tarea 3
+
+Trabajá de forma individual. Entregá un archivo `.R` y dos tablas CSV. Escribí las respuestas en palabras en líneas que empiecen con `#`.
+
+## Datos
+
+Usá los códigos `c("PED-0001", "PED-0310", "PED-12", "XPED-0002", "ped-0003")`. Copiá estas ventas simuladas a tu script. `NA` indica que falta un dato.
+
+```r
+ventas <- data.frame(
+  fecha = c("2026-09-01", NA, "2026-09-02", "2026-09-03",
+            "2026-09-04", "2026-09-04"),
+  sede = c("Heredia", "Cartago", NA, "Heredia", "Cartago", "Cartago"),
+  unidades = c(2, 3, 1, NA, NA, NA),
+  precio_crc = c(1500, 900, NA, 1200, 900, 900)
+)
+```
+
+## Qué hacer
+
+1. Validá los cinco códigos con un patrón que exija `PED-` en mayúscula seguido de exactamente cuatro dígitos. Mostrá cuáles cumplen.
+2. Elegí de la lista un código que un patrón sin marcas de inicio y final aceptaría por error. Explicá por qué.
+3. Usá un ciclo `for` para contar los `NA` en cada columna de la tabla original y calcular el porcentaje de faltantes por columna. Quitá los duplicados exactos y repetí el conteo y el cálculo con la tabla de filas únicas.
+4. Guardá las tablas como `faltantes_original.csv` y `faltantes_sin_duplicados.csv`. Indicá cuántas filas usaste como denominador en cada caso.
+5. **Nuevos casos.** Agregá `"PED-0000"` y `"PED-12345"` al vector de códigos. Predecí qué devuelve el patrón para cada uno y comprobalo con R.
+6. **Normalización.** Probá con `c(" ped-0310 ", "ped-0003")`. Quitá los espacios de más y convertí el texto a mayúsculas antes de aplicar el patrón. Mostrá cuáles códigos cambian de resultado y por qué.
+7. **Verificación del ciclo.** Contá los `NA` de `unidades` directamente, sin ciclo, antes y después de quitar los duplicados. Compará esos dos resultados con los CSV que guardaste y explicá cómo influyó el duplicado.

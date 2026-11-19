@@ -1,0 +1,135 @@
+---
+title: "Clase 6: Integrar tablas y comunicar en R Markdown"
+lang: es-CR
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    self_contained: true
+---
+
+[Índice general del curso](../INDICE_CURSO.html)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE,
+                      fig.width = 8, fig.height = 4.5)
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+dir.create("../salidas", showWarnings = FALSE)
+```
+
+Vas a unir tablas y preparar un informe que se pueda generar de nuevo con el mismo código.
+
+[Ejemplo comentado y lecturas adicionales](../materiales_adicionales.html#leccion-6) · [Referencias](../materiales_adicionales.html#referencias)
+
+## Agenda
+
+| Minutos | Actividad |
+|---|---|
+| 00–40 | Bloque 1. Unir ventas con un catálogo |
+| 40–80 | Bloque 2. Elegir evidencia para una pregunta |
+| 80–90 | Pausa |
+| 90–135 | Bloque 3. Generar un informe con R Markdown |
+| 135–150 | Repaso de los resultados de las prácticas y consultas |
+
+En cada bloque, primero revisamos la teoría, luego ejecutamos el ejemplo y al final practicamos en parejas o tríos. En cada práctica, alternen quién escribe el código y quién revisa el resultado.
+
+## 1. Unir ventas con un catálogo
+
+### Teoría
+
+Una unión añade información de una tabla a otra mediante una columna en común, llamada clave. Con `left_join()`, cada venta conserva su fila y recibe la información de su sede en el catálogo. Cuando no encuentra coincidencia, las columnas del catálogo quedan como `NA`.
+
+Antes de unir, verificá que el catálogo tenga una fila por sede. Si una sede aparece dos veces, una venta puede terminar repetida y alterar los totales. Usá `anti_join()` para encontrar sedes sin coincidencia y compará el número de filas antes y después de la unión.
+
+[Unir tablas por una clave](https://r4ds.hadley.nz/joins.html) · *Learning R* (Cotton, 2013, cap. 5).
+
+### Ejemplo
+
+Comprobá si hay ventas cuya sede falta en el catálogo. Después compará cuántas filas tenés antes y después de la unión.
+
+```{r ejemplo-1}
+source("herramientas/preparar_datos.R")
+ventas <- preparar_ventas()
+sedes <- read_csv("datos/sedes.csv", show_col_types = FALSE)
+stopifnot(!anyDuplicated(sedes$sede))
+anti_join(ventas, sedes, by = "sede")
+integradas <- left_join(ventas, sedes, by = "sede", relationship = "many-to-one")
+stopifnot(nrow(integradas) == nrow(ventas), !anyNA(integradas$region))
+```
+
+### Práctica en grupo
+
+1. Revisen si `sedes$sede` tiene duplicados con `anyDuplicated()`.
+2. Ejecuten `anti_join(ventas, sedes, by = "sede")` e interpreten cuántas ventas quedaron sin sede en el catálogo.
+3. Ejecuten `left_join()` como en el ejemplo y comparen las cantidades de filas antes y después.
+4. Expliquen qué podría pasar con esas cantidades si Heredia figurara dos veces en el catálogo.
+
+## 2. Elegir evidencia para una pregunta
+
+### Teoría
+
+La tabla ayuda a consultar los valores exactos y el gráfico ayuda a comparar patrones. Elegí la misma unidad de análisis para ambos. Si la tabla tiene una fila por sede y producto, el gráfico debe mostrar esa combinación o explicar cómo la agrupó.
+
+Cuando contés lo que encontraste, nombrá el grupo y da la cifra con su unidad. Si quedaron ventas fuera del cálculo, explicá por qué y cómo podría afectar la comparación.
+
+[Visualizar datos](https://r4ds.hadley.nz/data-visualize.html) · *Learning R* (Cotton, 2013, cap. 14).
+
+### Ejemplo
+
+Buscá en la tabla el ingreso de un producto en una sede y localizá esa misma cifra en el gráfico.
+
+```{r ejemplo-2}
+source("herramientas/preparar_datos.R")
+library(ggplot2)
+ventas <- preparar_ventas()
+evidencia <- ventas |> group_by(sede, producto) |>
+  summarise(transacciones = n(), faltantes = sum(is.na(unidades)),
+            ingreso_observado = sum(ingreso_crc, na.rm = TRUE), .groups = "drop")
+knitr::kable(evidencia, caption = "Ingreso observado por sede y producto (CRC)")
+ggplot(evidencia, aes(producto, ingreso_observado)) +
+  geom_col(fill = "#167d8d") + facet_wrap(~ sede) +
+  labs(x = "Producto", y = "Ingreso observado (CRC)",
+       caption = "Datos simulados; unidades faltantes sin imputar") + theme_minimal()
+```
+
+### Práctica en grupo
+
+1. Elijan un producto y una sede del resumen. Localicen ese monto en la tabla y en el gráfico.
+2. Dentro de esa sede, identifiquen el producto con la barra más alta y anoten su monto exacto de la tabla.
+3. Consulten la columna de faltantes para esa combinación y expliquen qué ingresos quedaron excluidos.
+4. Escriban un hallazgo con cifra y unidad, y agreguen una limitación que se desprenda del conteo de faltantes.
+
+## 3. Generar un informe con R Markdown
+
+### Teoría
+
+Un archivo `.Rmd` guarda el texto junto con el código que genera resultados. Los bloques de R contienen instrucciones. Las explicaciones se escriben fuera de esos bloques. Al pulsar **Knit**, el informe ejecuta su código en orden, por lo que cada objeto debe crearse antes de usarse.
+
+Si tu código necesita un CSV, guardá el `.Rmd` en la carpeta indicada y usá rutas relativas. Después de generar el HTML, revisá que la tabla, el gráfico y las cifras que escribiste correspondan a la misma ejecución.
+
+[guía de R Markdown de Posit · Texto, bloques de código y generación del informe](https://rmarkdown.rstudio.com/articles_intro.html)
+
+### Ejemplo
+
+1. En RStudio, elegí **File → New File → R Markdown**, seleccioná **HTML** y guardá el archivo como `ensayo_informe.Rmd` en la carpeta principal del proyecto.
+2. Conservá el encabezado inicial entre las dos líneas de tres guiones. Borrá el contenido que viene después.
+3. En el espacio en blanco, escribí `## Total observado` y dejá una línea en blanco. Insertá un bloque con **Insert → R** en el editor. Pegá la línea de abajo dentro del bloque.
+4. Guardá y pulsá **Knit**. En el HTML buscá el título, el código y el resultado.
+
+```{r ejemplo-3}
+sum(c(1500, 2500, NA), na.rm = TRUE)
+```
+
+### Práctica en grupo
+
+1. Creen el informe de ensayo y generen un primer HTML con **Knit**. Localicen en el HTML el total calculado.
+2. Escriban fuera del código una oración con el total y el número de montos conocidos.
+3. Cambien 2500 por 3500 y actualicen la oración para que corresponda al nuevo cálculo.
+4. Generen el HTML otra vez y pídanle a otra persona que compare la oración y el resultado mostrado.
+
+## Evaluación fuera de clase
+
+[Proyecto final](../proyecto_consigna.html). Hacé esta evaluación de forma individual fuera de clase.

@@ -1,0 +1,149 @@
+---
+title: "Clase 1: Tipos de datos, objetos y vectores"
+lang: es-CR
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    self_contained: true
+---
+
+[Índice general del curso](../INDICE_CURSO.html)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE,
+                      fig.width = 8, fig.height = 4.5)
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+dir.create("../salidas", showWarnings = FALSE)
+```
+
+Vas a ejecutar tus primeras instrucciones en R, guardar valores y calcular un promedio cuando faltan datos.
+
+[Ejemplo comentado y lecturas adicionales](../materiales_adicionales.html#leccion-1) · [Referencias](../materiales_adicionales.html#referencias)
+
+## Qué es R y para qué sirve {#que-es-r}
+
+R es un lenguaje de programación pensado para trabajar con datos. Ross Ihaka y Robert Gentleman lo empezaron a desarrollar a principios de los años noventa en la Universidad de Auckland, en Nueva Zelanda. Tomaron ideas de un lenguaje llamado S y presentaron R en un artículo (Ihaka & Gentleman, 1996). R es software libre. [El Proyecto R](https://www.r-project.org/about.html).
+
+Con R podés abrir un archivo de datos, corregir problemas en una tabla, calcular promedios y totales, hacer gráficos y preparar informes. Por ejemplo, si una soda registra sus ventas en un CSV, podés averiguar cuál producto vendió más y mostrarlo en un gráfico.
+
+Vale la pena aprender R porque podés guardar en un script los pasos que seguiste. Cuando lleguen los datos del mes siguiente, podés repetir el análisis con el archivo nuevo. También podés compartir el código para que otra persona revise cómo llegaste al resultado. En esta lección vas a empezar con un cálculo pequeño y vas a guardar tu primer script.
+
+## Agenda
+
+| Minutos | Actividad |
+|---|---|
+| 00–40 | Bloque 1. Ejecutar y guardar instrucciones |
+| 40–75 | Bloque 2. Distinguir números, texto y valores lógicos |
+| 75–85 | Pausa |
+| 85–135 | Bloque 3. Calcular con un vector y reconocer NA |
+| 135–150 | Repaso de los resultados de las prácticas y consultas |
+
+En cada bloque, primero revisamos la teoría, luego ejecutamos el ejemplo y al final practicamos en parejas o tríos. En cada práctica, alternen quién escribe el código y quién revisa el resultado.
+
+## 1. Ejecutar y guardar instrucciones
+
+### Teoría
+
+La consola ejecuta una instrucción y muestra su resultado. El script guarda las instrucciones para volver a ejecutarlas en orden. Una asignación como `precio <- 1500` guarda el valor de la derecha con el nombre de la izquierda. Escribir `precio` en la consola muestra el valor guardado. Si volvés a asignar ese nombre, R usa el valor nuevo de ahí en adelante.
+
+Cuando trabajés con un script, corré primero las líneas que crean los objetos. Si ejecutás una línea que usa `precio` antes de crearlo, R indica que el objeto no existe.
+
+[Scripts y proyectos en RStudio](https://r4ds.hadley.nz/workflow-scripts.html) · *Learning R* (Cotton, 2013, cap. 1).
+
+### Ejemplo
+
+Abrí el proyecto del curso y creá un script con **File → New File → R Script**. Corré cada línea con **Ctrl + Enter** (**Cmd + Enter** en Mac).
+
+```{r ejemplo-1}
+precio_cafe <- 1500
+precio_cafe * 2
+```
+
+Para guardar tu código, elegí **File → Save** o presioná **Ctrl + S** (**Cmd + S** en Mac). Nombrá el archivo `primer_script.R` y guardalo en la carpeta principal del proyecto. Si cerrás el archivo, podés volver a abrirlo con **File → Open File**. El script guarda las instrucciones. Para volver a ver los resultados en la consola, ejecutalas de nuevo.
+
+### Práctica en grupo
+
+1. En un script nuevo, guarden un precio de 1800 colones y calculen el costo de tres cafés.
+2. Guarden el número de cafés en el objeto `unidades`. Reescriban el cálculo usando ambos nombres.
+3. Cambien el precio a 1600. Antes de correr el cálculo, predigan si el costo sube o baja y luego compruébenlo.
+4. Guarden el script, ciérrenlo y ábranlo de nuevo. Ejecuten las líneas en orden e indiquen cuál asigna y cuál calcula.
+
+## 2. Distinguir números, texto y valores lógicos
+
+### Teoría
+
+El tipo indica qué operaciones tienen sentido para un valor. R usa `double` para números como `1500`, `integer` para enteros escritos con `L`, `character` para texto entre comillas y `logical` para `TRUE` y `FALSE`. Con `typeof()` podés comprobar el tipo que R está usando. Por ejemplo, `1500` y `"1500"` se parecen al leerlos, pero el segundo es texto.
+
+Un vector tiene un solo tipo. Si usás `c()` para reunir un número y un texto, R convierte el número a texto para que los dos quepan en el mismo vector. Revisá el tipo antes de calcular. Así podés detectar, por ejemplo, montos que quedaron como texto al importar una tabla.
+
+[Tipos de objetos en R](https://stat.ethz.ch/R-manual/R-devel/library/base/html/typeof.html) · *Learning R* (Cotton, 2013, cap. 3).
+
+### Ejemplo
+
+Antes de correr el código, pensá qué tipo tiene cada valor. Después compará tu respuesta con lo que devuelve `typeof()`.
+
+```{r ejemplo-2}
+precio <- 1500
+unidades <- 3L
+producto <- "Café"
+disponible <- TRUE
+typeof(precio)
+typeof(unidades)
+typeof(producto)
+typeof(disponible)
+as.numeric("1500")
+# Al mezclar texto y números, el vector se convierte a texto.
+mezcla <- c(1, "dos")
+typeof(mezcla)
+precio * unidades
+```
+
+### Práctica en grupo
+
+1. Clasifiquen `1500`, `3L`, `"1500"` y `TRUE`. Comprueben con `typeof()`.
+2. Conviertan `"1500"` con `as.numeric()` y comparen los tipos antes y después.
+3. Creen el vector `c(1500, "1500")`. Predigan su tipo y verifiquen con `typeof()`.
+4. Anoten cuál de los valores `1500` y `"1500"` usarían en una multiplicación y expliquen cómo detectaron el valor escrito como texto.
+
+## 3. Calcular con un vector y reconocer NA
+
+[Simulación paso a paso · Vectores y NA](../simulaciones.html#vectores)
+
+### Teoría
+
+Un vector guarda valores en orden. `c()` reúne sus elementos y `length()` cuenta sus posiciones, incluidas las que tienen `NA`. `NA` señala un dato desconocido. `is.na()` produce un valor lógico por posición, y `!is.na()` marca las posiciones conocidas. Sumá esos valores lógicos para contar los datos disponibles.
+
+Una vez que sabés dónde faltan datos, podés decidir cómo hacer el cálculo. Por ejemplo, `mean(x, na.rm = TRUE)` omite el dato faltante para ese cálculo. El resultado describe los datos conocidos. Informá cuántos datos usaste y en qué unidad estaban. Un cero sí es un valor registrado y puede cambiar el promedio.
+
+[Valores faltantes](https://r4ds.hadley.nz/missing-values.html) · *Learning R* (Cotton, 2013, cap. 2).
+
+### Ejemplo
+
+Supongamos que apuntamos cuántas tazas de café tomaron cinco personas y falta una respuesta. Buscá el promedio y el número de respuestas disponibles.
+
+```{r ejemplo-3}
+# <- asigna el resultado de la derecha al nombre de la izquierda.
+consumo <- c(2, 3, 1, 4, NA)
+consumo
+length(consumo)
+is.na(consumo)
+# Sin na.rm el resultado es NA: falta una observación.
+mean(consumo)
+mean(consumo, na.rm = TRUE)
+sum(!is.na(consumo))
+```
+
+### Práctica en grupo
+
+1. Creen `viajes <- c(2, NA, 4, 6)`. Usen `length()` para contar posiciones.
+2. Usen `is.na()` y `sum(!is.na(viajes))` para ubicar el dato faltante y contar los conocidos.
+3. Calculen el promedio con y sin `na.rm = TRUE`. Expliquen la diferencia entre las dos salidas.
+4. Creen un segundo vector con cero en lugar de `NA`. Comparen los promedios y expliquen cuándo ese cero sería un dato válido.
+
+## Evaluación fuera de clase
+
+[Prueba corta I](../actividades/prueba_corta_01.html). Hacé esta evaluación de forma individual fuera de clase.

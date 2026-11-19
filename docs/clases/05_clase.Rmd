@@ -1,0 +1,134 @@
+---
+title: "Clase 5: Visualizar e interpretar con ggplot2"
+lang: es-CR
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    self_contained: true
+---
+
+[Índice general del curso](../INDICE_CURSO.html)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE,
+                      fig.width = 8, fig.height = 4.5)
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+dir.create("../salidas", showWarnings = FALSE)
+```
+
+Vas a escoger un gráfico según la pregunta y explicar qué muestran los datos.
+
+[Ejemplo comentado y lecturas adicionales](../materiales_adicionales.html#leccion-5) · [Referencias](../materiales_adicionales.html#referencias)
+
+## Agenda
+
+| Minutos | Actividad |
+|---|---|
+| 00–40 | Bloque 1. Comparar categorías con barras |
+| 40–75 | Bloque 2. Ver cómo se distribuyen las cantidades |
+| 75–85 | Pausa |
+| 85–135 | Bloque 3. Explorar la relación entre dos números |
+| 135–150 | Repaso de los resultados de las prácticas y consultas |
+
+En cada bloque, primero revisamos la teoría, luego ejecutamos el ejemplo y al final practicamos en parejas o tríos. En cada práctica, alternen quién escribe el código y quién revisa el resultado.
+
+## 1. Comparar categorías con barras
+
+### Teoría
+
+Cuando ya tenés un total por categoría, `geom_col()` usa ese total como longitud de la barra. `aes()` conecta columnas de la tabla con los ejes. La longitud de cada barra representa una cantidad y conviene que empiece en cero para poder comparar las diferencias.
+
+Antes de dibujar las barras, comprobá que la tabla tenga una fila por categoría. Indicá la unidad en el eje de valores y ordená las barras si eso facilita la comparación. Las barras horizontales dejan más espacio para nombres largos.
+
+[Gráficos de barras con ggplot2](https://ggplot2.tidyverse.org/reference/geom_bar.html) · *Learning R* (Cotton, 2013, cap. 14).
+
+### Ejemplo
+
+Fijate en cuál sede tiene el mayor ingreso observado. Con `coord_flip()`, las barras quedan horizontales y el monto en colones se lee de izquierda a derecha. `ggsave()` guarda en un archivo el gráfico que le pasés.
+
+```{r ejemplo-1}
+source("herramientas/preparar_datos.R")
+library(ggplot2)
+ventas <- preparar_ventas()
+resumen <- ventas |> group_by(sede) |>
+  summarise(ingreso = sum(ingreso_crc, na.rm = TRUE), .groups = "drop")
+g <- ggplot(resumen, aes(x = reorder(sede, ingreso), y = ingreso)) +
+  geom_col(fill = "#167d8d") + coord_flip() +
+  labs(title = "Ingreso observado por sede", x = NULL, y = "Ingreso (CRC)",
+       caption = "Datos simulados. Se excluyen importes desconocidos.") +
+  theme_minimal(base_size = 12)
+print(g)
+ggsave("salidas/ingreso_sedes.png", g, width = 8, height = 4, dpi = 160)
+```
+
+### Práctica en grupo
+
+1. Cambien el agrupamiento del ejemplo para comparar productos por ingreso observado.
+2. Construyan barras con `geom_col()`, ordenen los productos por monto y rotulen el eje en colones.
+3. Localicen en la tabla el producto con mayor ingreso. Escriban su monto y verifiquen que coincide con la barra correspondiente.
+4. Combinen una nota sobre los datos simulados con un título que indique qué ingreso se está comparando.
+
+## 2. Ver cómo se distribuyen las cantidades
+
+### Teoría
+
+Un histograma agrupa una variable numérica en intervalos. Cada barra representa cuántos datos caen dentro de ese intervalo. `binwidth` indica su ancho. Un intervalo más ancho junta más valores. Uno muy angosto puede fragmentar la distribución en muchas barras con pocos casos.
+
+Probá dos anchos y fijate qué rasgos se ven en ambos. Por ejemplo, comprobá si la mayor parte de las ventas sigue concentrada en las cantidades pequeñas. Contá las observaciones representadas y avisá cuántas se excluyeron si había faltantes.
+
+[Histogramas con ggplot2](https://ggplot2.tidyverse.org/reference/geom_histogram.html) · *Learning R* (Cotton, 2013, cap. 14).
+
+### Ejemplo
+
+Usá las ventas con unidades conocidas y fijate cómo cambia el histograma al variar el ancho del intervalo.
+
+```{r ejemplo-2}
+ventas_con_unidades <- ventas |> filter(!is.na(unidades))
+nrow(ventas_con_unidades)
+histograma <- ggplot(ventas_con_unidades, aes(unidades)) +
+  geom_histogram(binwidth = 1, boundary = 0.5) +
+  labs(x = "Unidades por venta", y = "Cantidad de ventas")
+print(histograma)
+```
+
+### Práctica en grupo
+
+1. Cuenten las ventas con unidades conocidas y las excluidas por falta de unidades.
+2. Generen el histograma con `binwidth = 1` y describan qué cantidades se ven con más frecuencia.
+3. Repitan con `binwidth = 2` e indiquen qué cantidades quedan agrupadas.
+4. Elijan un ancho para comunicar cuántas ventas hubo por cantidad individual y justifiquen la elección.
+
+## 3. Explorar la relación entre dos números
+
+### Teoría
+
+Un gráfico de dispersión representa dos variables numéricas. Cada punto representa una observación. En este ejemplo, ubicás cada venta según su precio y la cantidad de unidades vendidas.
+
+Si dos ventas tienen los mismos valores, los puntos se superponen. Un `alpha` menor hace que se distingan mejor las zonas con muchos puntos. Describí el patrón que ves y sus excepciones. Para explicar por qué ocurre ese patrón haría falta información adicional.
+
+[Gráficos de dispersión con ggplot2](https://ggplot2.tidyverse.org/reference/geom_point.html) · *Learning R* (Cotton, 2013, cap. 14).
+
+### Ejemplo
+
+Fijate dónde se concentran los puntos y en cuáles precios se repiten las cantidades.
+
+```{r ejemplo-3}
+ggplot(ventas_con_unidades, aes(precio_crc, unidades)) +
+  geom_point(alpha = 0.4) +
+  labs(x = "Precio unitario (CRC)", y = "Unidades por venta")
+```
+
+### Práctica en grupo
+
+1. Dibujen la dispersión de precio y unidades. Expliquen qué significa un punto y en qué unidades se lee cada eje.
+2. Comparen `alpha = 0.4` con `alpha = 1` e identifiquen una zona donde se superponen datos.
+3. Agreguen un título y una nota sobre las ventas con unidades faltantes.
+4. Escriban una observación basada en el gráfico y una pregunta que los dos ejes no permitan responder.
+
+## Evaluación fuera de clase
+
+[Trabajo grupal II](../actividades/practica_04.html). Resuelvan los ocho problemas en equipo fuera de clase.

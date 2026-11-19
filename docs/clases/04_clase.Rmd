@@ -1,0 +1,139 @@
+---
+title: "Clase 4: Texto, expresiones regulares y ciclos for"
+lang: es-CR
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    self_contained: true
+---
+
+[Índice general del curso](../INDICE_CURSO.html)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE,
+                      fig.width = 8, fig.height = 4.5)
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+dir.create("../salidas", showWarnings = FALSE)
+```
+
+Vas a limpiar nombres, validar códigos y repetir una revisión con un ciclo.
+
+[Ejemplo comentado y lecturas adicionales](../materiales_adicionales.html#leccion-4) · [Referencias](../materiales_adicionales.html#referencias)
+
+## Agenda
+
+| Minutos | Actividad |
+|---|---|
+| 00–35 | Bloque 1. Uniformar nombres de sedes |
+| 35–75 | Bloque 2. Validar códigos con un patrón |
+| 75–85 | Pausa |
+| 85–135 | Bloque 3. Repetir una revisión con for |
+| 135–150 | Repaso de los resultados de las prácticas y consultas |
+
+En cada bloque, primero revisamos la teoría, luego ejecutamos el ejemplo y al final practicamos en parejas o tríos. En cada práctica, alternen quién escribe el código y quién revisa el resultado.
+
+## 1. Uniformar nombres de sedes
+
+### Teoría
+
+Un mismo lugar puede aparecer con distintas mayúsculas o con espacios sobrantes. R compara esos textos tal como están escritos. Al resumir, eso puede producir dos grupos para una sola sede. `str_squish()` quita los espacios de los extremos y reduce los espacios repetidos dentro del texto. `str_to_title()` cambia las mayúsculas iniciales según el idioma indicado. Con `str_to_upper()` podés convertir todo el texto a mayúsculas, por ejemplo cuando un código exige un prefijo como `VEN-`.
+
+Revisá las etiquetas que quedan antes y después de limpiar. Si dos nombres distintos quedan iguales, comprobá que representen el mismo lugar antes de agruparlos.
+
+[Trabajar con texto](https://r4ds.hadley.nz/strings.html) · *Learning R* (Cotton, 2013, cap. 13).
+
+### Ejemplo
+
+Compará las etiquetas antes y después de limpiarlas. Con `locale = "es"`, R aplica las reglas de mayúsculas del español.
+
+```{r ejemplo-1}
+sedes <- c(" san josé ", "HEREDIA", "Cartago")
+sedes_limpias <- stringr::str_squish(sedes)
+stringr::str_to_title(sedes_limpias, locale = "es")
+stringr::str_to_upper(sedes_limpias, locale = "es")
+```
+
+### Práctica en grupo
+
+1. Usen `c(" SAN JOSÉ ", "San  José", "Heredia", " HEREDIA ")`. Cuenten las etiquetas distintas con `length(unique(...))`.
+2. Apliquen `str_squish()` y muestren qué cambió en las etiquetas que tienen espacios.
+3. Apliquen `str_to_title()` con `locale = "es"`. Vuelvan a contar las etiquetas distintas.
+4. Expliquen cómo cambiaría un resumen por sede si se agrupara antes de limpiar los nombres.
+
+## 2. Validar códigos con un patrón
+
+### Teoría
+
+Una expresión regular describe el formato que querés reconocer. Los caracteres escritos tal cual, como `VEN-`, forman el prefijo. `[0-9]` admite un dígito y `{3}` pide exactamente tres. `^` y `$` marcan los extremos. Así podés exigir que todo el texto cumpla el formato.
+
+Probá el patrón con ejemplos válidos y con casos que deberían quedar fuera, como un código con caracteres de más. Usá `str_detect()` para ver el resultado. Un `TRUE` confirma que el texto cumple el formato. Para comprobar que el código existe o es único, necesitás revisar los registros.
+
+[Expresiones regulares](https://r4ds.hadley.nz/regexps.html) · *Learning R* (Cotton, 2013, cap. 13).
+
+### Ejemplo
+
+Fijate qué devuelve `str_detect()` para un código válido y para otro con caracteres de más.
+
+```{r ejemplo-2}
+library(stringr)
+codigos <- c("VEN-001", "VEN-120", "ven-004", "XVEN-005", "VEN-12")
+patron <- "^VEN-[0-9]{3}$"
+str_detect(codigos, patron)
+str_subset(codigos, patron)
+str_extract(codigos, "[0-9]+")
+sedes_texto <- c(" heredia  ", "SAN JOSÉ", "Cartago")
+str_to_title(str_squish(sedes_texto), locale = "es")
+str_replace("VEN-001", "^VEN-", "VENTA-")
+```
+
+### Práctica en grupo
+
+1. Prueben el patrón del ejemplo con `c("VEN-024", "VEN-0248", "ven-024", "XVEN-024")`. Predigan cuáles cumplen.
+2. Comprueben la predicción con `str_detect()` y muestren solo los válidos con `str_subset()`.
+3. Quiten temporalmente `^` y `$` del patrón. Identifiquen qué códigos se aceptan por error.
+4. Normalicen las mayúsculas con `str_to_upper()` y vuelvan a usar el patrón completo. Expliquen qué caso cambia.
+
+## 3. Repetir una revisión con for
+
+[Simulación paso a paso · Ciclo for](../simulaciones.html#for)
+
+### Teoría
+
+Un ciclo `for` repite instrucciones para cada elemento de una secuencia. En este ejemplo, el ciclo cambia de columna en cada vuelta. `seq_along(columnas)` genera una posición para cada nombre. En una vuelta, `columnas[i]` indica qué variable revisar y `ventas_revision[[columnas[i]]]` extrae sus valores.
+
+Antes del ciclo, `integer(length(columnas))` reserva una posición por columna. Cada vuelta guarda un conteo en `faltantes[i]`. Al terminar, el orden de los conteos coincide con el de los nombres. Para calcular un porcentaje comparable, dejá claro si la base son las filas originales o las filas únicas.
+
+[Control de flujo y ciclos for](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Control.html) · *Learning R* (Cotton, 2013, cap. 8).
+
+### Ejemplo
+
+Seguí la primera vuelta del ciclo. Fijate qué columna toma y dónde queda guardado el conteo.
+
+```{r ejemplo-3}
+ventas_revision <- readr::read_csv("datos/ventas.csv", show_col_types = FALSE)
+columnas <- c("fecha", "sede", "unidades", "precio_crc")
+faltantes <- integer(length(columnas))
+for (i in seq_along(columnas)) {
+  faltantes[i] <- sum(is.na(ventas_revision[[columnas[i]]]))
+}
+auditoria <- data.frame(variable = columnas, faltantes = faltantes)
+auditoria$porcentaje <- 100 * auditoria$faltantes / nrow(ventas_revision)
+auditoria
+# El porcentaje se calcula sobre todas las filas del CSV original.
+write.csv(auditoria, "salidas/auditoria_columnas.csv", row.names = FALSE)
+```
+
+### Práctica en grupo
+
+1. Adapten `columnas` a `c("unidades", "precio_crc")`. Anoten qué nombre toma `columnas[i]` en cada vuelta.
+2. Ejecuten el ciclo y muestren la tabla de conteos.
+3. Comprueben el conteo de unidades con `sum(is.na(ventas_revision$unidades))`.
+4. Expliquen qué número usaron como denominador del porcentaje y guarden la tabla en `salidas/auditoria_equipo.csv`.
+
+## Evaluación fuera de clase
+
+[Examen parcial](../actividades/examen_parcial.html). Hacé esta evaluación de forma individual fuera de clase.

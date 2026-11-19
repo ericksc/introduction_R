@@ -1,0 +1,22 @@
+---
+title: "Repaso de importación y limpieza"
+author: "Completar nombres"
+lang: es
+output:
+  html_document:
+    toc: true
+    theme: flatly
+---
+
+[Índice general del curso](../INDICE_CURSO.html)
+
+
+Material opcional para repasar.
+
+## Ejercicios
+
+1. Importen ventas.csv, revisen los tipos e identifiquen la unidad de observación.
+2. Registren filas originales, duplicados exactos y faltantes antes y después de deduplicar.
+3. Normalicen sede con str_squish y str_to_title, interpreten fecha y calculen ingreso_crc. Pueden reutilizar la función revisada en clase.
+4. Resuman por producto: transacciones, faltantes e ingreso observado. Verifiquen que las transacciones sumen 120 y que el total por productos coincida con el total general.
+   Respondan qué producto concentra más ingreso observado y expliquen una limitación. Exporten la tabla.

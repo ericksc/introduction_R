@@ -1,0 +1,144 @@
+---
+title: "Clase 2: Vectores, listas, matrices y data frames"
+lang: es-CR
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    self_contained: true
+---
+
+[Índice general del curso](../INDICE_CURSO.html)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE,
+                      fig.width = 8, fig.height = 4.5)
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+dir.create("../salidas", showWarnings = FALSE)
+```
+
+Vas a escoger entre una lista, una matriz y una tabla según el tipo de información que tengás.
+
+[Ejemplo comentado y lecturas adicionales](../materiales_adicionales.html#leccion-2) · [Referencias](../materiales_adicionales.html#referencias)
+
+## Agenda
+
+| Minutos | Actividad |
+|---|---|
+| 00–35 | Bloque 1. Guardar información relacionada en una lista |
+| 35–75 | Bloque 2. Organizar números en una matriz |
+| 75–85 | Pausa |
+| 85–135 | Bloque 3. Representar ventas en una tabla |
+| 135–150 | Repaso de los resultados de las prácticas y consultas |
+
+En cada bloque, primero revisamos la teoría, luego ejecutamos el ejemplo y al final practicamos en parejas o tríos. En cada práctica, alternen quién escribe el código y quién revisa el resultado.
+
+## 1. Guardar información relacionada en una lista
+
+[Simulación paso a paso · Listas](../simulaciones.html#listas)
+
+### Teoría
+
+Una lista reúne elementos que pueden tener tipos y tamaños distintos. Un elemento puede ser un texto, otro un vector y otro una tabla completa. Poner nombres a los elementos ayuda a encontrarlos al volver al script.
+
+Fijate en la diferencia entre usar uno o dos pares de corchetes. `ficha["precios"]` devuelve una lista con un solo elemento y conserva su nombre. `ficha[["precios"]]` devuelve el vector numérico que estaba adentro. Si vas a calcular el promedio de esos precios, ocupás el vector.
+
+[Listas en R](https://stat.ethz.ch/R-manual/R-devel/library/base/html/list.html) · *Learning R* (Cotton, 2013, cap. 5).
+
+### Ejemplo
+
+Corré las dos formas de extraer `precios` y compará lo que devuelve cada una.
+
+```{r ejemplo-1}
+ficha <- list(
+  fuente = "Registro simulado de cafeterías",
+  unidad_observacion = "Transacción",
+  moneda = "CRC",
+  precios = c(1500, 1200, 900)
+)
+names(ficha)
+ficha["precios"]
+ficha[["precios"]]
+mean(ficha[["precios"]])
+str(ficha)
+```
+
+### Práctica en grupo
+
+1. Agreguen a `list()` una entrada `nota = "Datos simulados"` y vuelvan a crear `ficha`.
+2. Usen `names()` para comprobar que la entrada tiene el nombre esperado.
+3. Extraigan `precios` con `[]` y con `[[]]`. Usen `str()` para comparar lo que devuelve cada forma.
+4. Calculen el precio promedio a partir del vector extraído. Expliquen por qué corresponde usar ese resultado para el cálculo.
+
+## 2. Organizar números en una matriz
+
+[Simulación paso a paso · Matrices](../simulaciones.html#matrices)
+
+### Teoría
+
+Una matriz organiza valores en filas y columnas. Todas sus celdas comparten el mismo tipo. Al crearla con `matrix()`, indicá el número de filas y decidí el orden de llenado. R llena por columnas de forma predeterminada. Con `byrow = TRUE`, llena una fila antes de pasar a la siguiente.
+
+Podés ponerle nombre a cada fila y a cada columna para ubicar los datos con más facilidad. En `m[2, 1]` el primer número corresponde a la fila y el segundo a la columna. `rowSums()` devuelve un total para cada fila y `colSums()` uno para cada columna. Interpretá el total según lo que representa la dimensión. Si las filas son días, los totales por fila son cantidades por día.
+
+[Matrices en R](https://stat.ethz.ch/R-manual/R-devel/library/base/html/matrix.html) · *Learning R* (Cotton, 2013, cap. 4).
+
+### Ejemplo
+
+Usá `rowSums()` para ver cuántas unidades se vendieron cada día y `colSums()` para ver cuántas se vendieron de cada producto.
+
+```{r ejemplo-2}
+unidades <- matrix(c(2, 3, 4, 5, 1, 2), nrow = 2, byrow = TRUE,
+                   dimnames = list(c("lunes", "martes"), c("cafe", "te", "pan")))
+unidades
+dim(unidades)
+unidades[1, 2]
+unidades[, "cafe"]
+rowSums(unidades)
+colSums(unidades)
+```
+
+### Práctica en grupo
+
+1. Creen la matriz de cantidades del ejemplo y comprueben sus dimensiones con `dim()`.
+2. Localicen con índices la cantidad de Té del martes y escriban qué representa cada índice.
+3. Cambien el 5 por un 8 en el vector que crea la matriz. Predigan cuál total por fila y cuál total por columna van a cambiar.
+4. Reconstruyan la matriz y comprueben la predicción con `rowSums()` y `colSums()`.
+
+## 3. Representar ventas en una tabla
+
+[Simulación paso a paso · Data frames](../simulaciones.html#dataframes)
+
+### Teoría
+
+Un data frame organiza observaciones en filas y variables en columnas. Las columnas de una misma tabla pueden tener tipos diferentes. Por ejemplo, una columna guarda nombres de productos y otra guarda cantidades. Para construir la tabla, cada vector debe tener un valor por fila.
+
+Para seleccionar datos de una tabla, usá una coma entre las filas y las columnas. En `ventas[condicion, columnas]`, la parte izquierda indica cuáles filas conservás y la derecha cuáles columnas mostrás. `ventas$unidades >= 3` evalúa cada fila y produce un vector de `TRUE` y `FALSE`. Al usarlo como índice, conservás las ventas que cumplen la condición.
+
+[Data frames en R](https://stat.ethz.ch/R-manual/R-devel/library/base/html/data.frame.html) · *Learning R* (Cotton, 2013, cap. 5).
+
+### Ejemplo
+
+Creá la tabla y multiplicá las unidades por el precio para calcular el ingreso de cada venta en colones.
+
+```{r ejemplo-3}
+ventas_pequenas <- data.frame(producto = c("Café", "Té", "Pan"),
+                              unidades = c(2L, 3L, 4L), precio_crc = c(1500, 1200, 900))
+str(ventas_pequenas)
+ventas_pequenas$ingreso_crc <- ventas_pequenas$unidades * ventas_pequenas$precio_crc
+ventas_pequenas[ventas_pequenas$unidades >= 3, c("producto", "ingreso_crc")]
+sum(ventas_pequenas$ingreso_crc)
+```
+
+### Práctica en grupo
+
+1. Agreguen al ejemplo una cuarta venta de Café con 3 unidades y 1500 colones por unidad. Extiendan los tres vectores de `data.frame()`.
+2. Usen `str()` para comprobar el número de filas y los tipos de las tres columnas.
+3. Calculen los ingresos por fila y muestren las ventas de al menos tres unidades. Comprueben si aparece la nueva venta.
+4. Sumen la columna de ingresos de la tabla completa. Expliquen por qué ese total cambia al sumar solo el resultado del filtro.
+
+## Evaluación fuera de clase
+
+[Trabajo grupal I](../actividades/practica_01.html). Resuelvan los ocho problemas en equipo fuera de clase.

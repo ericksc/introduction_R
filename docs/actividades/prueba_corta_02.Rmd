@@ -1,0 +1,22 @@
+---
+title: "Prueba corta II"
+lang: es-CR
+output:
+  html_document:
+    toc: true
+---
+
+[Índice general del curso](../INDICE_CURSO.html)
+
+
+## Indicaciones
+
+Resolvé esta evaluación de forma individual fuera de clase. Abrí el proyecto del curso y guardá un script nuevo como `prueba_corta_02.R`. Podés consultar tus scripts del curso. Escribí las respuestas en palabras en líneas que empiecen con `#`.
+
+## Ejercicios
+
+1. **Revisá el CSV (3 puntos).** Leé `datos/ventas.csv` con `read_csv()`. Contá las filas con `nrow()` y los duplicados exactos con `duplicated()` y `sum()`.
+2. **Prepará los datos (3 puntos).** Ejecutá `source("herramientas/preparar_datos.R")` y `ventas <- preparar_ventas()`. Contá las unidades desconocidas con `is.na()` y `sum()`.
+3. **Resumí por producto (4 puntos).** Usá `group_by(producto)` y `summarise()` para generar una fila por producto. Mostrá la tabla con el conteo de ventas, los faltantes y el ingreso observado en colones. Elegí un producto y escribí en una oración cuánto ingreso se pudo sumar y cuántas de sus ventas quedaron fuera de esa suma. Mostrá el resumen en la consola.
+
+Entregá el script guardado con los tres ejercicios.

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datos · Introducción a R</title>
+<link rel="stylesheet" href="../assets/estilo.css">
+</head>
+<body>
+<header>
+<a href="../index.html">Introducción a R</a>
+<nav>
+<a href="../lecciones/leccion-1.html">Lección 1</a><a href="../lecciones/leccion-2.html">Lección 2</a><a href="../lecciones/leccion-3.html">Lección 3</a><a href="../lecciones/leccion-4.html">Lección 4</a><a href="../lecciones/leccion-5.html">Lección 5</a><a href="../lecciones/leccion-6.html">Lección 6</a><a href="index.html">Datos</a>
+</nav>
+</header>
+<main>
+<h1>Datos de práctica: cafeterías</h1>
+<p>Datos completamente simulados para docencia (semilla 2026); no representan una empresa, encuesta ni población real y no contienen datos personales. Ventas entre septiembre y octubre de 2026.</p>
+<h2>Descargas</h2>
+<ul class="links">
+<li><a href="ventas.csv" download>ventas.csv</a>: transacciones.</li>
+<li><a href="sedes.csv" download>sedes.csv</a>: catálogo de sedes.</li>
+<li><a href="metas.csv" download>metas.csv</a>: metas mensuales de ingreso.</li>
+<li><a href="DICCIONARIO.md" download>DICCIONARIO.md</a>: diccionario completo.</li>
+</ul>
+<h2>Diccionario</h2>
+<table>
+<tr><th>Campo</th><th>Significado / unidad</th></tr>
+<tr><td>ventas.id_venta</td><td>Identificador de transacción, entero, clave esperada</td></tr>
+<tr><td>ventas.fecha</td><td>Fecha ISO AAAA-MM-DD, texto al importar</td></tr>
+<tr><td>ventas.sede</td><td>Sede; contiene espacios y mayúsculas inconsistentes intencionales</td></tr>
+<tr><td>ventas.producto</td><td>Café, Té o Pan</td></tr>
+<tr><td>ventas.unidades</td><td>Cantidad vendida, entero positivo; vacío = desconocido</td></tr>
+<tr><td>ventas.precio_crc</td><td>Precio por unidad en colones costarricenses</td></tr>
+<tr><td>sedes.sede</td><td>Clave única del catálogo de sedes</td></tr>
+<tr><td>sedes.region</td><td>Región didáctica; todas son Central</td></tr>
+<tr><td>metas.sede</td><td>Clave de sede</td></tr>
+<tr><td>metas.septiembre / octubre</td><td>Meta mensual de ingreso en CRC</td></tr>
+</table>
+<p>Control docente: 121 filas originales; 120 transacciones únicas; 1 duplicado exacto; 7 cantidades faltantes después de deduplicar; 2 etiquetas de sede inconsistentes. No se imputan cantidades. <code>ingreso_crc = unidades × precio_crc</code>; el ingreso observado excluye valores desconocidos y puede subestimar el total. Las metas son ficticias. No hay gastos: ingreso no equivale a ganancia.</p>
+</main>
+<footer>Introducción a R · Fundatec · noviembre 2026</footer>
+</body>
+</html>

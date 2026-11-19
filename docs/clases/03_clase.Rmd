@@ -1,0 +1,164 @@
+---
+title: "Clase 3: Importar, revisar y transformar con dplyr"
+lang: es-CR
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    self_contained: true
+---
+
+[Índice general del curso](../INDICE_CURSO.html)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE,
+                      fig.width = 8, fig.height = 4.5)
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+dir.create("../salidas", showWarnings = FALSE)
+```
+
+Vas a abrir un archivo CSV, revisar sus datos y resumir las ventas por grupo.
+
+[Ejemplo comentado y lecturas adicionales](../materiales_adicionales.html#leccion-3) · [Referencias](../materiales_adicionales.html#referencias)
+
+## Agenda
+
+| Minutos | Actividad |
+|---|---|
+| 00–40 | Bloque 1. Abrir un archivo CSV |
+| 40–80 | Bloque 2. Revisar y preparar los datos |
+| 80–90 | Pausa |
+| 90–135 | Bloque 3. Resumir las ventas por grupo |
+| 135–150 | Repaso de los resultados de las prácticas y consultas |
+
+En cada bloque, primero revisamos la teoría, luego ejecutamos el ejemplo y al final practicamos en parejas o tríos. En cada práctica, alternen quién escribe el código y quién revisa el resultado.
+
+## 1. Abrir un archivo CSV
+
+### Teoría
+
+Un CSV representa una tabla en texto, con una fila por registro y separadores entre campos. La primera fila suele contener los nombres de columnas. Al importar, `read_csv()` convierte esas columnas en vectores de R. Conviene indicar los tipos cuando ya sabés cómo debe leerse cada variable. Un identificador con ceros al inicio debe tratarse como texto si querés conservar los ceros.
+
+Después de abrir un CSV, revisá las primeras filas y los tipos. `str()` muestra cómo quedó cada columna y `problems()` señala valores que no se pudieron interpretar según el tipo indicado. Esta revisión ayuda a detectar problemas antes de calcular.
+
+[Importar CSV con readr](https://readr.tidyverse.org/reference/read_delim.html) · *Learning R* (Cotton, 2013, cap. 12).
+
+### Ejemplo
+
+Abrí el proyecto del curso. R busca archivos a partir de la carpeta del proyecto. La ruta `datos/ventas.csv` indica que `ventas.csv` está dentro de `datos`. Antes de leerlo, usá `file.exists("datos/ventas.csv")`. Si devuelve `FALSE`, revisá el nombre del archivo, la carpeta y que abriste el proyecto correcto.
+
+```{r ejemplo-1}
+library(readr)
+file.exists("datos/ventas.csv")
+ventas <- read_csv("datos/ventas.csv", col_types = cols(
+  id_venta = col_integer(), fecha = col_character(),
+  sede = col_character(), producto = col_character(),
+  unidades = col_double(), precio_crc = col_double()
+))
+head(ventas)
+str(ventas)
+dim(ventas)
+problems(ventas)
+```
+
+### Práctica en grupo
+
+1. Comprueben con `file.exists()` que `datos/ventas.csv` existe y ábranlo con `read_csv()`.
+2. Muestren las primeras filas con `head()`. Expliquen qué representa una fila y en qué unidad se expresa el precio.
+3. Usen `str()` y comparen `id_venta` y `sede`: indiquen qué tipo tiene cada columna y por qué.
+4. Revisen `problems()`. Si no aparecen filas, expliquen qué verificó R al leer según los tipos indicados.
+
+## 2. Revisar y preparar los datos
+
+### Teoría
+
+Antes de transformar una tabla, anotá cuántas filas tiene, qué columnas traen `NA` y cuántas filas se repiten por completo. Dos ventas del mismo producto pueden ser legítimas. Una fila es un duplicado exacto cuando coincide en todas las columnas. Conservá el CSV original y aplicá los cambios sobre la tabla de trabajo.
+
+Si ya tenés las unidades y el precio, podés multiplicarlos para calcular el ingreso de cada venta. Usá `mutate()` para guardar el resultado en una columna nueva. La tabla conserva la misma cantidad de filas. Si falta la cantidad vendida, el ingreso de esa fila también queda como `NA`.
+
+[Crear y modificar columnas con mutate()](https://dplyr.tidyverse.org/reference/mutate.html) · *Learning R* (Cotton, 2013, cap. 13).
+
+### Ejemplo
+
+Primero revisá la tabla original. Después de limpiarla, compará cuántas filas tenía cada versión.
+
+```{r ejemplo-2}
+nrow(ventas)
+sum(duplicated(ventas))
+sum(is.na(ventas$unidades))
+unique(ventas$sede)
+range(ventas$precio_crc)
+# Una copia conserva el archivo original sin cambios.
+ventas_sin_duplicados <- ventas[!duplicated(ventas), ]
+stopifnot(!anyDuplicated(ventas_sin_duplicados$id_venta))
+table(ventas_sin_duplicados$producto)
+
+source("herramientas/preparar_datos.R")
+ventas <- preparar_ventas()
+ventas |>
+  filter(producto == "Café", unidades >= 3) |>
+  select(id_venta, sede, unidades, ingreso_crc) |>
+  arrange(desc(ingreso_crc))
+```
+
+### Práctica en grupo
+
+1. Cuenten las filas originales y los duplicados exactos antes de llamar a `preparar_ventas()`.
+2. Cuenten las filas de la tabla preparada. Comprueben si la diferencia coincide con el conteo de duplicados.
+3. Cuenten las unidades faltantes en las ventas únicas y expliquen qué ocurre con el ingreso de esas filas.
+4. Adapten el filtro del ejemplo para mostrar Pan con al menos tres unidades. Muestren las mismas columnas y ordenen por ingreso.
+
+## 3. Resumir las ventas por grupo
+
+[Simulación paso a paso · Transformaciones con dplyr](../simulaciones.html#dplyr)
+
+### Teoría
+
+Separá dos decisiones al resumir. `group_by()` define qué filas pertenecen a cada grupo y `summarise()` calcula una fila por grupo. Con `n()` contás todas las filas de ese grupo. Con `sum(is.na(unidades))` contás cuántas tienen unidades faltantes. La suma con `na.rm = TRUE` usa solo los ingresos conocidos.
+
+Para comprobar el resultado, sumá los conteos de los grupos y comparalos con la cantidad de filas de la tabla de trabajo. Para calcular un porcentaje, anotá qué total usás como denominador. Si el cálculo es por sede, elegí si querés comparar con todas las sedes o con el total de esa sede antes de dividir.
+
+[R for Data Science, cap. 3 · Agrupación y resumen con dplyr](https://r4ds.hadley.nz/data-transform.html)
+
+### Ejemplo
+
+Leé el resumen por sede y compará su suma de ingresos con el total general. Después calculá qué porcentaje corresponde a cada sede. Para eso, dividí el ingreso de cada sede entre el total general y multiplicá por 100.
+
+```{r ejemplo-3}
+resumen <- ventas |>
+  group_by(sede) |>
+  summarise(
+    transacciones = n(),
+    unidades_conocidas = sum(!is.na(unidades)),
+    faltantes = sum(is.na(unidades)),
+    ingreso_observado_crc = sum(ingreso_crc, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  arrange(desc(ingreso_observado_crc))
+resumen
+stopifnot(sum(resumen$transacciones) == nrow(ventas))
+total_general <- sum(ventas$ingreso_crc, na.rm = TRUE)
+sum(resumen$ingreso_observado_crc) == total_general
+resumen$porcentaje <- 100 * resumen$ingreso_observado_crc / total_general
+resumen
+dir.create("salidas", showWarnings = FALSE)
+write_csv(resumen, "salidas/resumen_sedes.csv")
+resumen_guardado <- read_csv("salidas/resumen_sedes.csv", show_col_types = FALSE)
+head(resumen_guardado)
+```
+
+`write_csv()` recibe primero la tabla y luego la ruta donde se va a guardar. En este caso, `dir.create()` se asegura de que exista la carpeta `salidas`. Si ya hay un archivo con ese nombre, `write_csv()` reemplaza su contenido. Abrí el CSV recién guardado con `read_csv()` para comprobar que tiene las columnas y filas que esperabas.
+
+### Práctica en grupo
+
+1. Cambien la agrupación a producto y obtengan ventas, faltantes e ingreso observado por grupo.
+2. Identifiquen el producto con mayor ingreso y reporten cuánto se pudo sumar y cuántas ventas de ese producto quedaron fuera.
+3. Sumen los ingresos por producto y comparen el resultado con la suma general.
+4. Guarden la tabla en `salidas/resumen_productos.csv`. Ábranla de nuevo y comprueben con `nrow()` que conserva todos los productos.
+
+## Evaluación fuera de clase
+
+[Prueba corta II](../actividades/prueba_corta_02.html). Hacé esta evaluación de forma individual fuera de clase.

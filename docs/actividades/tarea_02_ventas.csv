@@ -1,0 +1,11 @@
+id_venta,sede,producto,unidades,precio_crc
+1,Heredia,Café,3,1500
+2,Heredia,Pan,2,900
+3,Heredia,Té,1,1200
+4,Cartago,Café,4,1500
+5,Cartago,Pan,2,900
+6,Cartago,Té,NA,1200
+7,Heredia,Café,NA,1500
+8,Heredia,Pan,5,900
+8,Heredia,Pan,5,900
+9,Cartago,Té,3,1200
